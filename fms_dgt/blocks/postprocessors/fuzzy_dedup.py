@@ -1,20 +1,25 @@
-# Local
-from fms_dgt.base.block import BaseBlock, DATASET_TYPE
-from fms_dgt.base.registry import register_block
+# Standard
 from typing import Any, Dict, List, Optional, Union
+
+# Local
+from fms_dgt.base.block import DATASET_TYPE, BaseBlock
+from fms_dgt.base.registry import register_block
+
 
 @register_block("fuzzy_dedup")
 class FuzzyDedupPostprocessing(BaseBlock):
     """Base Class for all Postprocessors"""
 
-    def __init__(self,
-                 input_folder_path: str,
-                 intermediate_folder_path: str,
-                 output_folder_path: str,
-                 num_permutations: int = 64,
-                 threshold: float = 0.8,
-                 shingles_size: int = 5,
-                 **kwargs: Any) -> None:
+    def __init__(
+        self,
+        input_folder_path: str,
+        intermediate_folder_path: str,
+        output_folder_path: str,
+        num_permutations: int = 64,
+        threshold: float = 0.8,
+        shingles_size: int = 5,
+        **kwargs: Any,
+    ) -> None:
         super().__init__(**kwargs)
         self.input_folder_path = input_folder_path
         self.intermediate_folder_path = intermediate_folder_path
@@ -24,8 +29,10 @@ class FuzzyDedupPostprocessing(BaseBlock):
         self.shingles_size = shingles_size
 
     def doc_id(self, input_folder: str, output_folder: str, input_params: dict):
+        # Standard
         import sys
 
+        # Third Party
         from data_processing.utils import ParamsUtils
         from data_processing_ray.runtime.ray import RayTransformLauncher
         from doc_id_transform_ray import DocIDRayTransformConfiguration
@@ -52,8 +59,10 @@ class FuzzyDedupPostprocessing(BaseBlock):
         launcher.launch()
 
     def fdedup(self, input_folder: str, output_folder: str, input_params: dict):
+        # Standard
         import sys
 
+        # Third Party
         from data_processing.utils import ParamsUtils
         from data_processing_ray.runtime.ray import RayTransformLauncher
         from fdedup_transform_ray import FdedupRayTransformConfiguration
@@ -102,28 +111,41 @@ class FuzzyDedupPostprocessing(BaseBlock):
         # launch
         launcher.launch()
 
-    def fdedup_embeddable(self,
-            input_folder_path: str = "./output/",
-            runtime_code_location: str = "{'github': 'github', 'commit_hash': '12345', 'path': 'path'}",
-            runtime_pipeline_id: str = "pipeline_id",
-            runtime_job_id: str = "job_id",
+    def fdedup_embeddable(
+        self,
+        input_folder_path: str = "./output/",
+        runtime_code_location: str = "{'github': 'github', 'commit_hash': '12345', 'path': 'path'}",
+        runtime_pipeline_id: str = "pipeline_id",
+        runtime_job_id: str = "job_id",
     ):
         args = locals()
         args.pop("input_folder_path", "")
         args.pop("self")
-        doc_id_output_folder = self.intermediate_folder_path+"/doc_id"
+        doc_id_output_folder = self.intermediate_folder_path + "/doc_id"
         fdedup_output_folder = self.output_folder_path
-        doc_id_task = self.doc_id(input_folder=input_folder_path, output_folder=doc_id_output_folder, input_params=args)
-        fdedup_task = self.fdedup(input_folder=doc_id_output_folder, output_folder=fdedup_output_folder,
-                             input_params=args)
+        doc_id_task = self.doc_id(
+            input_folder=input_folder_path,
+            output_folder=doc_id_output_folder,
+            input_params=args,
+        )
+        fdedup_task = self.fdedup(
+            input_folder=doc_id_output_folder,
+            output_folder=fdedup_output_folder,
+            input_params=args,
+        )
 
-    def generate(self, inputs: DATASET_TYPE,
+    def generate(
+        self,
+        inputs: DATASET_TYPE,
         *,
         arg_fields: Optional[List[str]] = None,
         kwarg_fields: Optional[List[str]] = None,
-        result_field: Optional[List[str]] = None,):
+        result_field: Optional[List[str]] = None,
+    ):
 
+        # Standard
         import shutil
+
         self._postprocess()
         shutil.rmtree(self.intermediate_folder_path)
 
@@ -132,4 +154,3 @@ class FuzzyDedupPostprocessing(BaseBlock):
     def _postprocess(self) -> bool:
         self.fdedup_embeddable(input_folder_path=self.input_folder_path)
         return True
-

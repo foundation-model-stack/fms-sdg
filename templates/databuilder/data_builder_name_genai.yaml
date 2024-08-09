@@ -1,12 +1,12 @@
 name: data_builder_name # MUST match the name of the file!
 blocks:
-  llm1:
+  - name: llm1
     type: genai
     temperature: 0.0
     max_new_tokens: 512
     min_new_tokens: 1
     model_id_or_path: mistralai/mixtral-8x7b-instruct-v01
-  val1:
+  - name: val1
     type: rouge_scorer
     filter: true
     threshold: 0.0

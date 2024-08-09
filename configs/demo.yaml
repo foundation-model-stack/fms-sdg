@@ -1,5 +1,5 @@
 name: simple
-generators:
+blocks:
   llm1:
     type: vllm
     model_id_or_path: <local-path-to-model>
