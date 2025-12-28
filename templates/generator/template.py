@@ -12,7 +12,7 @@ from fms_dgt.base.registry import register_block
 
 @register_block("template_generator")
 class TemplateGenerator(BaseGeneratorBlock):
-    """Base Class for all Generators"""
+    """TODO: Copy and edit this template to implement your own generator class"""
 
     def __init__(self, name: str, config: Dict, **kwargs: Any) -> None:
         super().__init__(name, config, **kwargs)

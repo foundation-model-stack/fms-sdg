@@ -10,7 +10,13 @@ from fms_dgt.base.registry import register_dataloader
 
 @register_dataloader("default")
 class DefaultDataloader(BaseDataloader):
-    """Base Class for all dataloaders"""
+    """
+    The default dataloader takes a datastore and iterates over it.
+
+    @param state_datastore : A data store.
+    @param loop_over_data  : If true, it wraps around when it reaches the end of the iterator.
+
+    """
 
     def __init__(
         self,

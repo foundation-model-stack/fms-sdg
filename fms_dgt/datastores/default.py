@@ -20,7 +20,22 @@ T = TypeVar("T")
 
 @register_datastore("default")
 class DefaultDatastore(BaseDatastore):
-    """Base Class for all data stores"""
+    """
+    The default datastore is a data store that takes a name of a `.jsonl`,
+    `.json`, `.yaml`, or `parquet` file, loads it, and returns an iterator
+    over it.
+
+    If none of the filename extension matches, it attempts to give the first
+    argument to huggingface's `datasets.load_dataset` function to load the data, and returns an iterator over it.
+
+    It also has an ability to dump the data into a file.
+
+    @param output_dir  : The destination directory for writing the data.
+    @param data_format : The data format for writing the data. It is not used for loading; The format is guessed from data_path.
+    @param data        : A list. Data loaded from the files are concatenated with this list.
+    @param data_path   : The path to the file to load. If it is a list, it is interpreted as the arguments to huggingface's `datasets.load_dataset` .
+
+    """
 
     def __init__(
         self,
